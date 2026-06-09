@@ -59,6 +59,15 @@
     --shadow-light-300: -10px 10px 20px 0px rgba(218, 213, 213, 0.1);
     --shadow-dark-100: 0px 2px 10px 0px rgba(46, 52, 56, 0.1);
     --shadow-dark-200: 2px 0px 20px 0px rgba(39, 36, 36, 0.04);
+
+    /* Fonts */
+
+    --font-inter: var(--font-inter);
+    --font-space-grotesk: var(--font-space-grotesk);
+
+    /* Breakpoints */
+
+    --breakpoint-xs: 420px;
 }
 
 @media (prefers-color-scheme: dark) {
