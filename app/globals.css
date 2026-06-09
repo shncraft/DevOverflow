@@ -3,6 +3,23 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
+
+    --primary: #ff7000;
+    --primary-light: #fff1e6;
+    --dark-100: #000000;
+    --dark-200: #0f1117;
+    --dark-300: #151821;
+    --dark-400: #212734;
+    --dark-500: #101012;
+
+    --light-400: #858ead;
+    --light-500: #7b8ec8;
+    --light-700: #dce3f1;
+    --light-800: #f4f6f8;
+    --light-850: #fdfdfd;
+    --light-900: #ffffff;
+
+    --link-100: #1da1f2;
 }
 
 @theme inline {
@@ -10,6 +27,38 @@
     --color-foreground: var(--foreground);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+
+    --color-primary: var(--primary);
+    --color-primary-light: var(--primary-light);
+    --color-dark-100: var(--dark-100);
+    --color-dark-200: var(--dark-200);
+    --color-dark-300: var(--dark-300);
+    --color-dark-400: var(--dark-400);
+    --color-dark-500: var(--dark-500);
+
+    --color-light-400: var(--light-400);
+    --color-light-500: var(--light-500);
+    --color-light-700: var(--light-700);
+    --color-light-800: var(--light-800);
+    --color-light-850: var(--light-850);
+    --color-light-900: var(--light-900);
+
+    --color-link-100: var(--link-100);
+
+    --radius-2: 8px;
+    --radius-1_5: 6px;
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-md: calc(var(--radius) - 4px);
+
+    --shadow-light-100:
+        0px 12px 20px 0px rgba(184, 184, 184, 0.03),
+        0px 6px 12px 0px rgba(184, 184, 184, 0.02),
+        0px 2px 4px 0px rgba(184, 184, 184, 0.03);
+    --shadow-light-200: 10px 10px 20px 0px rgba(218, 213, 213, 0.1);
+    --shadow-light-300: -10px 10px 20px 0px rgba(218, 213, 213, 0.1);
+    --shadow-dark-100: 0px 2px 10px 0px rgba(46, 52, 56, 0.1);
+    --shadow-dark-200: 2px 0px 20px 0px rgba(39, 36, 36, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +71,522 @@
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Inter", sans-serif;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+    }
+
+    /* v4 changed default border-color to currentColor;
+     restore the v3 behaviour project-wide */
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
+
+/* ── Background helpers ── */
+@utility background-light850_dark100 {
+    background-color: var(--color-light-850);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-100);
+    }
+}
+@utility background-light900_dark200 {
+    background-color: var(--color-light-900);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-200);
+    }
+}
+@utility background-light900_dark300 {
+    background-color: var(--color-light-900);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-300);
+    }
+}
+@utility background-light800_darkgradient {
+    background-color: var(--color-light-800);
+    &:where(.dark, .dark *) {
+        background: linear-gradient(
+            232deg,
+            rgba(23, 28, 35, 0.41) 0%,
+            rgba(19, 22, 28, 0.7) 100%
+        );
+    }
+}
+@utility background-light800_dark400 {
+    background-color: var(--color-light-800) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-400) !important;
+    }
+}
+@utility background-light700_dark400 {
+    background-color: var(--color-light-700);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-400);
+    }
+}
+@utility background-light700_dark300 {
+    background-color: var(--color-light-700);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-300);
+    }
+}
+@utility background-light800_dark300 {
+    background-color: var(--color-light-800) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-300) !important;
+    }
+}
+@utility background-light800_dark200 {
+    background-color: var(--color-light-800);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-200);
+    }
+}
+@utility background-dark400_light900 {
+    background-color: var(--color-light-900) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-400) !important;
+    }
+}
+
+/* ── Text helpers ── */
+@utility text-dark100_light900 {
+    color: var(--color-dark-100) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-900) !important;
+    }
+}
+@utility text-dark200_light900 {
+    color: var(--color-dark-200);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-900);
+    }
+}
+@utility text-dark200_light800 {
+    color: var(--color-dark-200) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-800) !important;
+    }
+}
+@utility text-dark300_light700 {
+    color: var(--color-dark-300);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-700);
+    }
+}
+@utility text-dark400_light700 {
+    color: var(--color-dark-400);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-700);
+    }
+}
+@utility text-dark500_light700 {
+    color: var(--color-dark-500) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-700) !important;
+    }
+}
+@utility text-dark500_light500 {
+    color: var(--color-dark-500);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-500);
+    }
+}
+@utility text-dark500_light400 {
+    color: var(--color-dark-500);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-400);
+    }
+}
+@utility text-dark300_light900 {
+    color: var(--color-dark-300) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-900) !important;
+    }
+}
+@utility text-dark400_light800 {
+    color: var(--color-dark-400);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-800);
+    }
+}
+@utility text-light400_light500 {
+    color: var(--color-light-400) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-500) !important;
+    }
+}
+@utility text-dark400_light500 {
+    color: var(--color-dark-400);
+    &:where(.dark, .dark *) {
+        color: var(--color-light-500);
+    }
+}
+@utility text-dark400_light900 {
+    color: var(--color-dark-400) !important;
+    &:where(.dark, .dark *) {
+        color: var(--color-light-900) !important;
+    }
+}
+
+/* ── Border helpers ── */
+@utility light-border {
+    border-color: var(--color-light-800);
+    &:where(.dark, .dark *) {
+        border-color: var(--color-dark-300);
+    }
+}
+@utility light-border-2 {
+    border-color: var(--color-light-700) !important;
+    &:where(.dark, .dark *) {
+        border-color: var(--color-dark-400) !important;
+    }
+}
+
+/* ── Typography scale ── */
+@utility h1-bold {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 42px;
+    letter-spacing: -0.05em;
+}
+@utility h2-bold {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 31.2px;
+}
+@utility h2-semibold {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 31.2px;
+}
+@utility h3-bold {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+}
+@utility h3-semibold {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24.8px;
+}
+@utility base-medium {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 25.2px;
+}
+@utility base-semibold {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 25.2px;
+}
+@utility base-bold {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 140%;
+}
+@utility paragraph-regular {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22.4px;
+}
+@utility paragraph-medium {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22.4px;
+}
+@utility paragraph-semibold {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20.8px;
+}
+@utility body-regular {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19.6px;
+}
+@utility body-medium {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18.2px;
+}
+@utility body-semibold {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18.2px;
+}
+@utility body-bold {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18.2px;
+}
+@utility small-regular {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15.6px;
+}
+@utility small-medium {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 15.6px;
+}
+@utility small-semibold {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 15.6px;
+}
+@utility subtle-medium {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    line-height: 13px !important;
+}
+@utility subtle-regular {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 13px;
+}
+
+/* ── Placeholder ── */
+@utility placeholder {
+    &::placeholder {
+        color: var(--color-light-400);
+    }
+    &:where(.dark, .dark *)::placeholder {
+        color: var(--color-light-500);
+    }
+}
+
+/* ── Invert ── */
+@utility invert-colors {
+    filter: invert(100%);
+    &:where(.dark, .dark *) {
+        filter: invert(0%);
+    }
+}
+
+/* ── Shadows ── */
+@utility shadow-light100_dark100 {
+    box-shadow: var(--shadow-light-100);
+    &:where(.dark, .dark *) {
+        box-shadow: var(--shadow-dark-100);
+    }
+}
+@utility shadow-light100_darknone {
+    box-shadow: var(--shadow-light-100);
+    &:where(.dark, .dark *) {
+        box-shadow: none;
+    }
+}
+
+/* ── Gradients ── */
+@utility primary-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+}
+@utility dark-gradient {
+    background: linear-gradient(
+        232deg,
+        rgba(23, 28, 35, 0.41) 0%,
+        rgba(19, 22, 28, 0.7) 100%
+    );
+}
+@utility light-gradient {
+    background: linear-gradient(
+        132deg,
+        rgba(247, 249, 255, 0.5) 0%,
+        rgba(229, 237, 255, 0.25) 100%
+    );
+}
+@utility primary-text-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ── Layout helpers ── */
+@utility flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@utility flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+@utility flex-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* ── Card / button wrappers ── */
+@utility card-wrapper {
+    background-color: var(--color-light-900);
+    box-shadow: var(--shadow-light-100);
+    &:where(.dark, .dark *) {
+        background: linear-gradient(
+            232deg,
+            rgba(23, 28, 35, 0.41) 0%,
+            rgba(19, 22, 28, 0.7) 100%
+        );
+        box-shadow: var(--shadow-dark-100);
+    }
+}
+@utility btn {
+    background-color: var(--color-light-800) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-300) !important;
+    }
+}
+@utility btn-secondary {
+    background-color: var(--color-light-800) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-400) !important;
+    }
+}
+@utility btn-tertiary {
+    background-color: var(--color-light-700) !important;
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-300) !important;
+    }
+}
+
+/* ── No-focus ring ── */
+@utility no-focus {
+    &:focus-visible {
+        --tw-ring-shadow: none !important;
+        --tw-ring-offset-shadow: none !important;
+        outline: none !important;
+    }
+}
+
+/* ── Prose / markdown ── */
+@utility markdown {
+    max-width: 100%;
+    /* Rely on @tailwindcss/typography plugin classes in your JSX;
+     dark-mode overrides below use the same selector pattern */
+    &:where(.dark, .dark *) a {
+        color: #1da1f2;
+    }
+}
+
+/* ── Tab ── */
+@utility tab {
+    min-height: 100%;
+    background-color: var(--color-light-800);
+    color: var(--color-light-500);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark-400);
+    }
+    &[data-state="active"] {
+        background-color: var(--color-primary-100);
+        color: var(--color-primary-500);
+    }
+    &:where(.dark, .dark *)[data-state="active"] {
+        background-color: var(--color-dark-300);
+    }
+}
+
+/* ─────────────────────────────────────────────
+   7. Global non-utility styles (scrollbars, etc.)
+   These can't be @utility blocks — keep as plain CSS
+───────────────────────────────────────────── */
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 50px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Active theme filter */
+.active-theme {
+    filter: invert(53%) sepia(98%) saturate(3332%) hue-rotate(0deg)
+        brightness(104%) contrast(106%) !important;
+}
+
+/* Anchor offset for hash links */
+.hash-span {
+    margin-top: -140px;
+    padding-bottom: 140px;
+    display: block;
+}
+
+/* MDX Editor toolbar */
+.mdxeditor-toolbar {
+    background: #ffffff !important;
+}
+.dark .mdxeditor-toolbar {
+    background: #151821 !important;
+}
+.dark .mdxeditor-toolbar button svg {
+    color: #858ead !important;
+}
+.dark .mdxeditor-toolbar button:hover svg {
+    color: #000 !important;
+}
+.dark .mdxeditor-toolbar [role="separator"] {
+    border-color: #555 !important;
+}
+
+/* Markdown link & code colour */
+.markdown a {
+    color: #1da1f2;
+}
+.markdown a,
+code {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    padding: 2px;
+    color: #ff7000 !important;
+}
+
+/* Markdown pre */
+.markdown pre {
+    display: grid;
+    width: 100%;
+}
+.markdown pre code {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    color: inherit !important;
+}
+
+/* Lexical editor height */
+[data-lexical-editor="true"] {
+    height: 350px !important;
+    overflow-y: auto !important;
 }
