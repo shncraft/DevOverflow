@@ -3,7 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ThemeProvider from "@/context/theme";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/navigation/navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 const inter = localFont({
   src: "./fonts/Inter-VF.ttf",
@@ -26,11 +28,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="en"
@@ -44,17 +48,19 @@ export default function RootLayout({
       )}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          {children}
-        </ThemeProvider>
-      </body>
+      <SessionProvider session={session}>
+        <body className="min-h-full flex flex-col">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster richColors duration={1500} />
+        </body>
+      </SessionProvider>
     </html>
   );
 }

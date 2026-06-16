@@ -92,6 +92,9 @@
     --font-sans: var(--font-sans);
     --font-mono: var(--font-geist-mono);
 
+    --background-image-auth-light: url("/images/auth-light.png");
+    --background-image-auth-dark: url("/images/auth-dark.png");
+
     --color-primary-500: var(--primary-500);
     --color-primary-100: var(--primary-100);
     --color-dark-100: var(--dark-100);
