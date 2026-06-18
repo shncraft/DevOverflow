@@ -26,7 +26,7 @@ export function MobileNavigation() {
         />
       </SheetTrigger>
       <SheetContent
-        className="background-light900_dark200 border-none px-6"
+        className="background-light900_dark200 border-none p-8"
         side="left"
       >
         <SheetHeader>
