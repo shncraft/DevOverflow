@@ -23,9 +23,9 @@ export default function LocalSearch({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = searchParams.get("query");
 
-  const [searchQuery, setSearchQuery] = useState(query);
+  const [searchQuery, setSearchQuery] = useState(query || "");
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -34,6 +34,7 @@ export default function LocalSearch({
       if (currentQuery === searchQuery) {
         return;
       }
+
       if (searchQuery) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
