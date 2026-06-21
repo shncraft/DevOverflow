@@ -13,8 +13,19 @@ import {
 } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useRef } from "react";
+import { MDXEditorMethods } from "@mdxeditor/editor";
+import dynamic from "next/dynamic";
+
+// This is the only place InitializedMDXEditor is imported directly.
+const Editor = dynamic(() => import("@/components/editor"), {
+  // Make sure we turn SSR off
+  ssr: false,
+});
 
 export function QuestionForm() {
+  const editorRef = useRef<MDXEditorMethods>(null);
+
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
@@ -72,11 +83,10 @@ export function QuestionForm() {
                 Detailed explanation of your problem{" "}
                 <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input
-                {...field}
-                aria-invalid={fieldState.invalid}
-                required
-                className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-14 rounded-1.5 border"
+              <Editor
+                editorRef={editorRef}
+                markdown={field.value}
+                fieldChange={field.onChange}
               />
               <FieldDescription className="body-regular mt-2.5 text-light-500">
                 Introduce the problem and expand on what you&apos;ve put in the
