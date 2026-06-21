@@ -42,7 +42,7 @@ export default function NavLinks({
               alt={item.label}
               height={20}
               width={20}
-              className={cn({ "inverted-colors": !isActive })}
+              className={cn(!isActive && "invert-colors")}
             />
             <p
               className={cn(
