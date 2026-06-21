@@ -85,8 +85,7 @@ export function AuthForm<TSchema extends FieldValues>({
                     required
                     type={field.name === "password" ? "password" : "text"}
                     aria-invalid={fieldState.invalid}
-                    className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus min-h-12 rounded-1.5 border
-                    "
+                    className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus min-h-12 rounded-1.5 border"
                     autoComplete="off"
                   />
                   {fieldState.invalid && (
