@@ -20,7 +20,7 @@ export function MobileNavigation() {
         <Image
           src="/icons/hamburger.svg"
           alt="Menu"
-          className="inverted-colors sm:hidden"
+          className="invert-colors sm:hidden"
           height={36}
           width={36}
         />
