@@ -1,11 +1,21 @@
-// Template for Generating Mongoose DB Schema
+import Account from "./account.model";
+import Answer from "./answer.model";
+import Collection from "./collection.model";
+import Interaction from "./interaction.model";
+import Question from "./question.model";
+import TagQuestion from "./tag-question.model";
+import Tag from "./tag.model";
+import User from "./user.model";
+import Vote from "./vote.model";
 
-import { model, models, Schema } from "mongoose";
-
-export interface IModel {}
-
-const ModelSchema = new Schema<IModel>({}, { timestamps: true });
-
-const Model = models?.Model || model<IModel>("Model", ModelSchema);
-
-export default Model;
+export {
+  Account,
+  Answer,
+  Collection,
+  Interaction,
+  Question,
+  TagQuestion,
+  Tag,
+  User,
+  Vote,
+};
