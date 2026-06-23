@@ -15,7 +15,7 @@ export const api = {
   },
   users: {
     getAll: () => fetchHandler(`${API_BASE_URL}/users`),
-    getById: (id: string) => fetchHandler(`${API_BASE_URL}/users[${id}`),
+    getById: (id: string) => fetchHandler(`${API_BASE_URL}/users/${id}`),
     getByEmail: (email: string) =>
       fetchHandler(`${API_BASE_URL}/users/email`, {
         method: "POST",
@@ -38,7 +38,7 @@ export const api = {
   },
   accounts: {
     getAll: () => fetchHandler(`${API_BASE_URL}/accounts`),
-    getById: (id: string) => fetchHandler(`${API_BASE_URL}/accounts[${id}`),
+    getById: (id: string) => fetchHandler(`${API_BASE_URL}/accounts/${id}`),
     getByProvider: (providerAccountId: string) =>
       fetchHandler(`${API_BASE_URL}/accounts/provider`, {
         method: "POST",
