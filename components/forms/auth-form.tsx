@@ -16,11 +16,13 @@ import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import z, { ZodType } from "zod/v4";
 import { asZodResolver } from "@/lib/utils";
+import { ActionResponse } from "@/types/global";
+import { useRouter } from "next/navigation";
 
 interface AuthFormProps<TSchema extends FieldValues> {
   schema: ZodType<TSchema>;
   defaultValues: TSchema;
-  onSubmit: (data: TSchema) => Promise<{ success: boolean }>;
+  onSubmit: (data: TSchema) => Promise<ActionResponse>;
   formType: "SIGN_IN" | "SIGN_UP";
 }
 
@@ -30,7 +32,7 @@ export function AuthForm<TSchema extends FieldValues>({
   formType,
   onSubmit,
 }: AuthFormProps<TSchema>) {
-  // console.log(schema);
+  const router = useRouter();
 
   const form = useForm<z.infer<TSchema>>({
     resolver: asZodResolver(schema),
@@ -38,21 +40,18 @@ export function AuthForm<TSchema extends FieldValues>({
   });
 
   const handleSubmit: SubmitHandler<TSchema> = async (data: TSchema) => {
-    console.log("data:", data);
-    toast.success("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+    const result = await onSubmit(data);
+
+    if (result.success) {
+      toast.success(
+        formType === "SIGN_IN"
+          ? "Signed In successfully."
+          : "Signed Up successfully.",
+      );
+      router.push(ROUTES.HOME);
+    } else {
+      toast.error(result.error?.message);
+    }
   };
 
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
