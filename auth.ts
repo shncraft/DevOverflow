@@ -3,7 +3,7 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { api } from "./lib/api";
 import { ActionResponse } from "./types/global";
-import { IAccount } from "./database/account.model";
+import { IAccountDoc } from "./database/account.model";
 
 // We'll check if the sign-in account type is credentials; if yes, then we skip. We'll handle it the other way around when doing email password-based authentication.
 //
@@ -23,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             account.type === "credentials"
               ? token.email!
               : account.providerAccountId,
-          )) as ActionResponse<IAccount>;
+          )) as ActionResponse<IAccountDoc>;
 
         if (!success || !existingAccount) return token;
 
