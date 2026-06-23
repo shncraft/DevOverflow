@@ -3,46 +3,71 @@ import { Button } from "../ui/button";
 import NavLinks from "./navbar/nav-links";
 import ROUTES from "@/constants/routes";
 import Image from "next/image";
+import { auth } from "@/auth";
+import { LogOut } from "lucide-react";
+import { logoutAction } from "@/lib/actions/auth.action";
 
-export default function LeftSidebar() {
+export default async function LeftSidebar() {
+  const session = await auth();
+  const userId = session?.user?.id;
   return (
     <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-66.5">
       <div className="flex flex-1 flex-col gap-6">
-        <NavLinks />
+        <NavLinks userId={userId} />
       </div>
 
       <div className="flex flex-col gap-3">
-        <Button
-          className="small-medium btn-secondary min-h-10.25 w-full rounded-lg px-4 py-3 shadow-none"
-          asChild
-        >
-          <Link href={ROUTES.SIGN_IN}>
-            <Image
-              src="/icons/account.svg"
-              alt="Account"
-              width={20}
-              height={20}
-              className="invert-colors lg:hidden"
-            />
-            <span className="primary-text-gradient max-lg:hidden">Log In</span>
-          </Link>
-        </Button>
+        {userId ? (
+          <form action={logoutAction}>
+            <Button
+              type="submit"
+              className="small-medium btn-secondary min-h-10.25 w-full rounded-lg px-4 py-3 shadow-none"
+            >
+              <LogOut className="size-5 text-primary-500" />
+              <span className="primary-text-gradient max-lg:hidden">
+                Logout
+              </span>
+            </Button>
+          </form>
+        ) : (
+          <>
+            <Button
+              className="small-medium btn-secondary min-h-10.25 w-full rounded-lg px-4 py-3 shadow-none"
+              asChild
+            >
+              <Link href={ROUTES.SIGN_IN}>
+                <Image
+                  src="/icons/account.svg"
+                  alt="Account"
+                  width={20}
+                  height={20}
+                  className="invert-colors lg:hidden"
+                />
+                <span className="primary-text-gradient max-lg:hidden">
+                  Log In
+                </span>
+              </Link>
+            </Button>
 
-        <Button
-          className="small-medium light-border btn-tertiary min-h-10.25 w-full rounded-lg border px-4 py-3 shadow-none text-dark400_light900"
-          asChild
-        >
-          <Link href={ROUTES.SIGN_UP}>
-            <Image
-              src="/icons/sign-up.svg"
-              alt="Sign Up"
-              width={20}
-              height={20}
-              className="invert-colors lg:hidden"
-            />
-            <span className="primary-text-gradient max-lg:hidden">Sign Up</span>
-          </Link>
-        </Button>
+            <Button
+              className="small-medium light-border btn-tertiary min-h-10.25 w-full rounded-lg border px-4 py-3 shadow-none text-dark400_light900"
+              asChild
+            >
+              <Link href={ROUTES.SIGN_UP}>
+                <Image
+                  src="/icons/sign-up.svg"
+                  alt="Sign Up"
+                  width={20}
+                  height={20}
+                  className="invert-colors lg:hidden"
+                />
+                <span className="primary-text-gradient max-lg:hidden">
+                  Sign Up
+                </span>
+              </Link>
+            </Button>
+          </>
+        )}
       </div>
     </section>
   );

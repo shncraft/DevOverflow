@@ -7,10 +7,10 @@ import { signInSchema, signUpSchema } from "../validations";
 import handleError from "../handlers/error";
 import { Account, User } from "@/database";
 import bcrypt from "bcryptjs";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { NotFoundError } from "../http-errors";
 
-export async function signUpWithCredentials(
+export async function signUpWithCredentialsAction(
   params: AuthCredentials,
 ): Promise<ActionResponse> {
   const validationResult = await action({ params, schema: signUpSchema });
@@ -72,7 +72,7 @@ export async function signUpWithCredentials(
   }
 }
 
-export async function signInWithCredentials(
+export async function signInWithCredentialsAction(
   params: Pick<AuthCredentials, "email" | "password">,
 ): Promise<ActionResponse> {
   const validationResult = await action({ params, schema: signInSchema });
@@ -109,4 +109,8 @@ export async function signInWithCredentials(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: "/" });
 }
