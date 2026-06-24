@@ -9,7 +9,7 @@ const questions = [
   {
     _id: "1",
     title: "How to learn React?",
-    description: "I want to learn React. Anyone can help?",
+    content: "I want to learn React. Anyone can help?",
     tags: [
       { _id: "t1", name: "JavaScript" },
       { _id: "t2", name: "React" },
@@ -28,7 +28,7 @@ const questions = [
   {
     _id: "2",
     title: "How to learn JavaScript?",
-    description: "I want to learn JavaScript. Anyone can help?",
+    content: "I want to learn JavaScript. Anyone can help?",
     tags: [
       { _id: "t1", name: "JavaScript" },
       { _id: "t2", name: "ES6" },

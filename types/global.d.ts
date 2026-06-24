@@ -12,6 +12,7 @@ interface Author {
 interface Question {
   _id: string;
   title: string;
+  content: string;
   tags: Tag[];
   author: Author;
   createdAt: Date;
@@ -30,7 +31,7 @@ type ActionResponse<T = null> = {
   status?: number;
 };
 
-type SuccessResponse<T = null> = ActionResponse<T> & { success; true };
+type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
 type ErrorResponse = ActionResponse<undefined> & { success: false };
 
 type APIErrorResponse = NextResponse<ErrorResponse>;
