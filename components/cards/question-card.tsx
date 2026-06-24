@@ -3,7 +3,6 @@ import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import TagCard from "./tag-card";
 import { Metric } from "../metric";
-import { Question } from "@/types/global";
 
 interface QuestionCardProps {
   question: Question;

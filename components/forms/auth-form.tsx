@@ -16,7 +16,6 @@ import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import z, { ZodType } from "zod/v4";
 import { asZodResolver } from "@/lib/utils";
-import { ActionResponse } from "@/types/global";
 import { useRouter } from "next/navigation";
 
 interface AuthFormProps<TSchema extends FieldValues> {

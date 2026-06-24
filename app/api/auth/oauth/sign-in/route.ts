@@ -6,7 +6,6 @@ import { SignInWithOAuthSchema } from "@/lib/validations";
 import { ValidationError } from "@/lib/http-errors";
 import slugify from "slugify";
 import { Account, User } from "@/database";
-import { APIErrorResponse } from "@/types/global";
 
 export async function POST(request: NextRequest) {
   // Step 1: Destructure request body

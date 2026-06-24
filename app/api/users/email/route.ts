@@ -2,7 +2,6 @@ import { User } from "@/database";
 import handleError from "@/lib/handlers/error";
 import { NotFoundError, ValidationError } from "@/lib/http-errors";
 import { UserSchema } from "@/lib/validations";
-import { APIErrorResponse } from "@/types/global";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/users/email
