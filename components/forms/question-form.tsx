@@ -13,10 +13,16 @@ import {
 } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { KeyboardEvent, useRef } from "react";
+import { KeyboardEvent, useRef, useTransition } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import TagCard from "../cards/tag-card";
+import { createQuestion } from "@/lib/actions/question.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import ROUTES from "@/constants/routes";
+import { cn } from "@/lib/utils";
+import { LoaderIcon } from "lucide-react";
 
 // This is the only place InitializedMDXEditor is imported directly.
 const Editor = dynamic(() => import("@/components/editor"), {
@@ -25,7 +31,9 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 export function QuestionForm() {
+  const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
@@ -75,7 +83,16 @@ export function QuestionForm() {
   };
 
   const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
-    console.log("data:", data);
+    startTransition(async () => {
+      const result = await createQuestion(data);
+
+      if (result.success) {
+        toast.success("Question created successfully.");
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+      } else {
+        toast.error(`Error ${result.status}: ${result.error?.message}`);
+      }
+    });
   };
 
   return (
@@ -188,9 +205,22 @@ export function QuestionForm() {
       <div className="mt-16 flex justify-end">
         <Button
           type="submit"
-          className="primary-gradient w-fit text-light-900!"
+          disabled={isPending}
+          className="primary-gradient w-fit text-light-900! p-4 py-5 rounded-lg"
         >
-          Ask A Question
+          {isPending ? (
+            <>
+              <LoaderIcon
+                role="status"
+                aria-label="Loading"
+                className={cn("mr-2 size-4 animate-spin")}
+              />
+
+              <span>Loading...</span>
+            </>
+          ) : (
+            <span>Ask A Question</span>
+          )}
         </Button>
       </div>
     </form>
