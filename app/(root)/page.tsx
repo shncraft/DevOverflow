@@ -23,19 +23,6 @@ export default async function Home({ searchParams }: SearchParams) {
 
   const { questions } = data || {};
 
-  // const filteredQuestions = questions.filter((question) => {
-  //   const matchesQuery = question.title
-  //     .toLowerCase()
-  //     .includes(query?.toLowerCase());
-  //   const matchesFilter = filter
-  //     ? question.tags.find(
-  //         (tag) => tag.name.toLowerCase() === filter.toLowerCase(),
-  //       )
-  //     : true;
-
-  //   return matchesQuery && matchesFilter;
-  // });
-
   return (
     <>
       <section className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">

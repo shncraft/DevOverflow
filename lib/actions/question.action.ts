@@ -13,6 +13,7 @@ import { Question, Tag } from "@/database";
 import TagQuestion from "@/database/tag-question.model";
 import { ForbiddenError, NotFoundError } from "../http-errors";
 import { ITagDoc } from "@/database/tag.model";
+import { IQuestionDoc } from "@/database/question.model";
 
 export async function createQuestion(
   params: CreateQuestionParams,
@@ -86,7 +87,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams,
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<IQuestionDoc>> {
   // validate params using action wrapper helper
   const validatedResult = await action({
     params,
@@ -127,11 +128,15 @@ export async function editQuestion(
 
     // find all the tags to add --> by filtering out the different tags from question tags
     const tagsToAdd = tags.filter(
-      (tag) => !question.tags.includes(tag.toLowerCase()),
+      (tag) =>
+        !question.tags.some((t: ITagDoc) =>
+          t.name.toLocaleLowerCase().includes(tag.toLowerCase()),
+        ),
     );
     // find all the tags to remove --> similar filtering
     const tagsToRemove = question.tags.filter(
-      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase()),
+      (tag: ITagDoc) =>
+        !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase()),
     );
 
     // create empty newTagDocuments array
@@ -141,7 +146,7 @@ export async function editQuestion(
     if (tagsToAdd.length > 0) {
       for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
-          { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+          { name: { $regex: `^${tag}$`, $options: "i" } },
           { $setOnInsert: { name: tag }, $inc: { question: 1 } },
           { upsert: true, new: true, session },
         );
@@ -172,7 +177,10 @@ export async function editQuestion(
 
       // remove those tag ids from the question's tags array
       question.tags = question.tags.filter(
-        (tagId: mongoose.Types.ObjectId) => !tagIdsToRemove.includes(tagId),
+        (tag: mongoose.Types.ObjectId) =>
+          !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(tag._id),
+          ),
       );
     }
 

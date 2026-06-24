@@ -98,9 +98,7 @@ export function QuestionForm({ question, isEdit = false }: QuestionFormProps) {
         if (result.success) {
           toast.success("Question updated successfully.");
           if (result.data) {
-            console.log("redirection initiated after update----->");
-
-            router.push(ROUTES.QUESTION(result.data._id));
+            router.push(ROUTES.QUESTION(result.data._id.toString()));
           }
         } else {
           toast.error(
