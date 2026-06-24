@@ -3,68 +3,38 @@ import { HomeFilter } from "@/components/filters/home-filter";
 import LocalSearch from "@/components/search/local-search";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
-
-const questions = [
-  {
-    _id: "1",
-    title: "How to learn React?",
-    content: "I want to learn React. Anyone can help?",
-    tags: [
-      { _id: "t1", name: "JavaScript" },
-      { _id: "t2", name: "React" },
-    ],
-    author: {
-      _id: "u1",
-      name: "Shani",
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pngkit.com%2Fpng%2Ffull%2F929-9290220_author-photo.png&f=1&nofb=1&ipt=4c3c0b697e1c96e9a80efe57a3349c5bf7afbb581135fa1323929aa319ae4d1c",
-    },
-    upvotes: 1200,
-    answers: 20,
-    views: 100,
-    createdAt: new Date("2026-06-19"),
-  },
-  {
-    _id: "2",
-    title: "How to learn JavaScript?",
-    content: "I want to learn JavaScript. Anyone can help?",
-    tags: [
-      { _id: "t1", name: "JavaScript" },
-      { _id: "t2", name: "ES6" },
-    ],
-    author: {
-      _id: "u2",
-      name: "Ravi",
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pngkit.com%2Fpng%2Ffull%2F929-9290220_author-photo.png&f=1&nofb=1&ipt=4c3c0b697e1c96e9a80efe57a3349c5bf7afbb581135fa1323929aa319ae4d1c",
-    },
-    upvotes: 145,
-    answers: 10,
-    views: 70,
-    createdAt: new Date(),
-  },
-];
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
 export default async function Home({ searchParams }: SearchParams) {
-  const { query = "", filter = "" } = await searchParams;
+  const { page, pageSize, query, filter, sort } = await searchParams;
 
-  const filteredQuestions = questions.filter((question) => {
-    const matchesQuery = question.title
-      .toLowerCase()
-      .includes(query?.toLowerCase());
-    const matchesFilter = filter
-      ? question.tags.find(
-          (tag) => tag.name.toLowerCase() === filter.toLowerCase(),
-        )
-      : true;
-
-    return matchesQuery && matchesFilter;
+  const { success, data, error } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query,
+    filter,
+    sort,
   });
+
+  const { questions } = data || {};
+
+  // const filteredQuestions = questions.filter((question) => {
+  //   const matchesQuery = question.title
+  //     .toLowerCase()
+  //     .includes(query?.toLowerCase());
+  //   const matchesFilter = filter
+  //     ? question.tags.find(
+  //         (tag) => tag.name.toLowerCase() === filter.toLowerCase(),
+  //       )
+  //     : true;
+
+  //   return matchesQuery && matchesFilter;
+  // });
 
   return (
     <>
@@ -89,11 +59,25 @@ export default async function Home({ searchParams }: SearchParams) {
 
       <HomeFilter />
 
-      <div className="mt-10 flex w-full flex-col gap-6">
-        {filteredQuestions.map((question) => (
-          <QuestionCard key={question._id} question={question} />
-        ))}
-      </div>
+      {success ? (
+        <div className="mt-10 flex w-full flex-col gap-6">
+          {questions && questions.length > 0 ? (
+            questions.map((question) => (
+              <QuestionCard key={question._id} question={question} />
+            ))
+          ) : (
+            <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">No Questions found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10 flex w-full items-center justify-center">
+          <p className="text-dark400_light700">
+            {error?.message || "Failed to fetch questions"}
+          </p>
+        </div>
+      )}
     </>
   );
 }

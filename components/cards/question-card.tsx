@@ -9,17 +9,7 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({
-  question: {
-    _id,
-    title,
-    content,
-    tags,
-    author,
-    createdAt,
-    upvotes,
-    answers,
-    views,
-  },
+  question: { _id, title, tags, author, createdAt, upvotes, answers, views },
 }: QuestionCardProps) {
   return (
     <div className="card-wrapper rounded-2.5 p-9 sm:px-11">
