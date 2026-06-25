@@ -7,12 +7,10 @@ import { cn } from "@/lib/utils";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/url";
 
 const filters = [
-  { name: "React", value: "react" },
-  { name: "JavaScript", value: "javascript" },
   { name: "Newest", value: "newest" },
+  { name: "Recommended Questions", value: "recommended" },
   { name: "Popular", value: "Popular" },
   { name: "Unanswered", value: "Unanswered" },
-  { name: "Recommended", value: "recommended" },
 ];
 
 export function HomeFilter() {
