@@ -9,6 +9,7 @@ interface UserAvatarProps {
   name: string;
   image?: string | null;
   className?: string;
+  fallbackClassName?: string;
 }
 
 export function UserAvatar({
@@ -16,6 +17,7 @@ export function UserAvatar({
   name,
   image,
   className = "h-9 w-9",
+  fallbackClassName,
 }: UserAvatarProps) {
   const initials = name
     .split(" ")
@@ -41,7 +43,12 @@ export function UserAvatar({
             quality={100}
           />
         ) : (
-          <AvatarFallback className="primary-gradient font-space-grotesk font-bold tracking-wider text-white">
+          <AvatarFallback
+            className={cn(
+              fallbackClassName,
+              "primary-gradient font-space-grotesk font-bold tracking-wider text-white",
+            )}
+          >
             {initials}
           </AvatarFallback>
         )}

@@ -11,6 +11,7 @@ interface MetricProps {
   title: string;
   imgStyles?: string;
   isAuthor?: boolean;
+  titleStyles?: string;
 }
 
 export function Metric({
@@ -22,6 +23,7 @@ export function Metric({
   textStyles,
   imgStyles,
   isAuthor,
+  titleStyles,
 }: MetricProps) {
   const metricContent = (
     <>
@@ -35,14 +37,17 @@ export function Metric({
 
       <p className={cn("flex items-center gap-1", textStyles)}>
         {value}
-        <span
-          className={cn(
-            "small-regular line-clamp-1",
-            isAuthor ? "max-sm:hidden" : "",
-          )}
-        >
-          {title}
-        </span>
+        {title ? (
+          <span
+            className={cn(
+              "small-regular line-clamp-1",
+              titleStyles,
+              isAuthor ? "max-sm:hidden" : "",
+            )}
+          >
+            {title}
+          </span>
+        ) : null}
       </p>
     </>
   );
