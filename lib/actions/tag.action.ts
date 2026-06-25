@@ -1,9 +1,13 @@
 "use server";
 
-import { Tag } from "@/database";
+import { Question, Tag } from "@/database";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { PaginatedSearchParamSchema } from "../validations";
+import {
+  GetTagQuestionsSchema,
+  PaginatedSearchParamSchema,
+} from "../validations";
+import { NotFoundError } from "../http-errors";
 
 export async function getTags(
   params: PaginatedSearchParams,
@@ -71,7 +75,66 @@ export async function getTags(
 
     const isNext = totalTags > offset + tags.length;
 
-    return { success: true, data: { tags, isNext } };
+    return {
+      success: true,
+      data: { tags: JSON.parse(JSON.stringify(tags)), isNext },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getTagQuestions(
+  params: GetTagQuestionsParams,
+): Promise<
+  ActionResponse<{ tag: Tag; questions: Question[]; isNext: boolean }>
+> {
+  const validatedResult = await action({
+    params,
+    schema: GetTagQuestionsSchema,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const { tagId, page = 1, pageSize = 10, query } = validatedResult.params!;
+
+  const limit = Number(pageSize);
+  const offset = (Number(page) - 1) * pageSize;
+
+  try {
+    // first find tag based on tag ID given
+    const tag = await Tag.findById(tagId);
+    if (!tag) throw new NotFoundError("Tag");
+
+    // build filterQuery
+    const filterQuery: Record<string, unknown> = { tags: { $in: [tagId] } };
+    if (query) {
+      filterQuery.title = { $regex: query, $options: "i" };
+    }
+
+    const totalQuestions = await Question.countDocuments(filterQuery);
+
+    const questions = await Question.find(filterQuery)
+      .select("_id title views answers upvotes downvotes author createdAt")
+      .populate([
+        { path: "author", select: "name image" },
+        { path: "tags", select: "name" },
+      ])
+      .skip(offset)
+      .limit(limit);
+
+    const isNext = totalQuestions > offset + questions.length;
+
+    return {
+      success: true,
+      data: {
+        tag: JSON.parse(JSON.stringify(tag)),
+        questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
