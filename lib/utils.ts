@@ -1,4 +1,4 @@
-import { techMap } from "@/constants/tech-map";
+import { techDescriptionMap, techMap } from "@/constants/tech-map";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx, type ClassValue } from "clsx";
 import { FieldValues, Resolver } from "react-hook-form";
@@ -22,6 +22,15 @@ export function getDevIconClassName(techName: string) {
   return techMap[normalizedTechName]
     ? `${techMap[normalizedTechName]} colored`
     : "devicon-devicon-plain";
+}
+
+export function getTechDescription(techName: string) {
+  const normalizedTechName = techName.replace(/[ .]g/, "").toLowerCase();
+
+  return (
+    techDescriptionMap[normalizedTechName] ||
+    `${techName} is a technology or tool widely used in software development, providing valuable features and capabilities.`
+  );
 }
 
 export function getTimeStamp(createdAt: Date) {

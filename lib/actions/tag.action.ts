@@ -20,13 +20,7 @@ export async function getTags(
   }
 
   // prepare the limit and offset
-  const {
-    page = 1,
-    pageSize = 10,
-    filter,
-    query,
-    sort,
-  } = validatedResult.params!;
+  const { page = 1, pageSize = 10, filter, query } = validatedResult.params!;
   const limit = Number(pageSize);
   const offset = (Number(page) - 1) * pageSize;
 

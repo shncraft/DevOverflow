@@ -12,6 +12,7 @@ interface LocalSearchProps {
   imgSrc: string;
   placeholder: string;
   otherClasses?: string;
+  iconPosition?: "left" | "right";
 }
 
 export default function LocalSearch({
@@ -19,6 +20,7 @@ export default function LocalSearch({
   imgSrc,
   placeholder,
   otherClasses,
+  iconPosition = "left",
 }: LocalSearchProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -65,13 +67,15 @@ export default function LocalSearch({
         otherClasses,
       )}
     >
-      <Image
-        src={imgSrc}
-        alt="search"
-        width={24}
-        height={24}
-        className="invert-colors cursor-pointer"
-      />
+      {iconPosition === "left" && (
+        <Image
+          src={imgSrc}
+          alt="search"
+          width={24}
+          height={24}
+          className="invert-colors cursor-pointer"
+        />
+      )}
       <Input
         type="text"
         placeholder={placeholder}
@@ -79,6 +83,16 @@ export default function LocalSearch({
         onChange={(e) => setSearchQuery(e.target.value)}
         className="paragraph-regular no-focus placeholder text-dark400_light700 border-none shadow-none outline-none bg-transparent"
       />
+
+      {iconPosition === "right" && (
+        <Image
+          src={imgSrc}
+          alt="search"
+          width={15}
+          height={15}
+          className="invert-colors cursor-pointer"
+        />
+      )}
     </div>
   );
 }
