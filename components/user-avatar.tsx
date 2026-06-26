@@ -27,12 +27,7 @@ export function UserAvatar({
     .slice(0, 2);
   return (
     <Link href={ROUTES.PROFILE(id)}>
-      <Avatar
-        className={cn(
-          className,
-          "rounded-full border-3 border-primary-500/50 hover:border-primary-500/80 transition-colors duration-200 ease-in-out",
-        )}
-      >
+      <Avatar className={cn(className)}>
         {image ? (
           <Image
             src={image}

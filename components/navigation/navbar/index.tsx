@@ -16,11 +16,13 @@ const Navbar = async () => {
         <Theme />
 
         {session?.user && (
-          <UserAvatar
-            id={session.user.id!}
-            name={session.user.name!}
-            image={session.user.image}
-          />
+          <div className="rounded-full border-3 border-primary-500/50 hover:border-primary-500/80 transition-colors duration-200 ease-in-out">
+            <UserAvatar
+              id={session.user.id!}
+              name={session.user.name!}
+              image={session.user.image}
+            />
+          </div>
         )}
 
         <MobileNavigation />
