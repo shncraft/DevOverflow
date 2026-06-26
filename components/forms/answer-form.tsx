@@ -9,7 +9,7 @@ import {
   FieldLabel,
 } from "../ui/field";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnswerSchema } from "@/lib/validations";
@@ -19,14 +19,17 @@ import { Button } from "../ui/button";
 import { LoaderIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { createAnswerAction } from "@/lib/actions/answer.action";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-export function AnswerForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export function AnswerForm({ questionId }: { questionId: string }) {
   const [isAISubmitting, setIsAISubmitting] = useState(false);
+
+  const [isAnswering, startAnsweringTransition] = useTransition();
 
   const editorRef = useRef<MDXEditorMethods>(null);
 
@@ -38,7 +41,20 @@ export function AnswerForm() {
   });
 
   const handleSubmit = async (data: z.infer<typeof AnswerSchema>) => {
-    console.log(data);
+    startAnsweringTransition(async () => {
+      const result = await createAnswerAction({
+        questionId,
+        content: data.content,
+      });
+
+      if (result.success) {
+        form.reset({ content: "" });
+
+        toast.success("Your answer has been posted successfully.");
+      } else {
+        toast.error(`Error: ${result.error?.message}`);
+      }
+    });
   };
 
   return (
@@ -106,10 +122,10 @@ export function AnswerForm() {
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isAnswering}
             className="primary-gradient w-fit text-light-900! p-4 py-5 rounded-lg"
           >
-            {isSubmitting ? (
+            {isAnswering ? (
               <>
                 <LoaderIcon
                   aria-label="Loading"
