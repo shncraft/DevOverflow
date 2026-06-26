@@ -3,7 +3,7 @@
 import mongoose from "mongoose";
 import { IAnswerDoc } from "@/database/answer.model";
 import action from "../handlers/action";
-import { CreateAnswerSchema } from "../validations";
+import { CreateAnswerSchema, GetAnswersSchema } from "../validations";
 import handleError from "../handlers/error";
 import { Question, Answer } from "@/database";
 import { NotFoundError } from "../http-errors";
@@ -60,5 +60,70 @@ export async function createAnswerAction(
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
+  }
+}
+
+export async function getAnswersAction(
+  params: GetAnswersParams,
+): Promise<
+  ActionResponse<{ answers: Answer[]; isNext: boolean; totalAnswers: number }>
+> {
+  const validatedResult = await action({
+    params,
+    schema: GetAnswersSchema,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const {
+    questionId,
+    filter,
+    page = 1,
+    pageSize = 10,
+  } = validatedResult.params!;
+
+  // build limit and offset
+  const limit = Number(pageSize);
+  const offset = (Number(page) - 1) * Number(pageSize);
+
+  // build sortCriteria
+  let sortCriteria = {};
+  switch (filter) {
+    case "latest":
+      sortCriteria = {
+        createdAt: -1,
+      };
+      break;
+    case "oldest":
+      sortCriteria = { createdAt: 1 };
+      break;
+    case "popular":
+      sortCriteria = {
+        upvotes: -1,
+      };
+      break;
+    default:
+      sortCriteria = {
+        createdAt: -1,
+      };
+      break;
+  }
+
+  try {
+    const totalAnswers = await Answer.countDocuments({ question: questionId });
+
+    const answers = await Answer.find({ question: questionId })
+      .populate("author", "_id name image")
+      .sort(sortCriteria)
+      .skip(offset)
+      .limit(limit);
+
+    const isNext = totalAnswers > answers.length + offset;
+
+    return { success: true, data: { answers, totalAnswers, isNext } };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
   }
 }

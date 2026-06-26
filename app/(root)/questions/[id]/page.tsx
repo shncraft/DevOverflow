@@ -4,6 +4,7 @@ import { AnswerForm } from "@/components/forms/answer-form";
 import { Metric } from "@/components/metric";
 import { UserAvatar } from "@/components/user-avatar";
 import ROUTES from "@/constants/routes";
+import { getAnswersAction } from "@/lib/actions/answer.action";
 import {
   getQuestionAction,
   incrementViewsAction,
@@ -25,6 +26,17 @@ export default async function QuestionDetails({ params }: RouteParams) {
   });
 
   if (!success || !question) return redirect("/404");
+
+  const {
+    success: answerSuccess,
+    data: answer,
+    error: answerError,
+  } = await getAnswersAction({
+    questionId: id,
+    page: 1,
+    pageSize: 10,
+    filter: "latest",
+  });
 
   const {
     author,

@@ -15,7 +15,6 @@ import TagQuestion from "@/database/tag-question.model";
 import { ForbiddenError, NotFoundError } from "../http-errors";
 import { ITagDoc } from "@/database/tag.model";
 import { IQuestionDoc } from "@/database/question.model";
-import ROUTES from "@/constants/routes";
 
 export async function createQuestionAction(
   params: CreateQuestionParams,
