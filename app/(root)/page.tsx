@@ -5,7 +5,7 @@ import LocalSearch from "@/components/search/local-search";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
-import { getQuestions } from "@/lib/actions/question.action";
+import { getQuestionsAction } from "@/lib/actions/question.action";
 import Link from "next/link";
 
 interface SearchParams {
@@ -15,7 +15,7 @@ interface SearchParams {
 export default async function Home({ searchParams }: SearchParams) {
   const { page, pageSize, query, filter, sort } = await searchParams;
 
-  const { success, data, error } = await getQuestions({
+  const { success, data, error } = await getQuestionsAction({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     query,

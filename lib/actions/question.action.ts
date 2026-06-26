@@ -15,7 +15,7 @@ import { ForbiddenError, NotFoundError } from "../http-errors";
 import { ITagDoc } from "@/database/tag.model";
 import { IQuestionDoc } from "@/database/question.model";
 
-export async function createQuestion(
+export async function createQuestionAction(
   params: CreateQuestionParams,
 ): Promise<ActionResponse<Question>> {
   // validate params using action wrapper helper
@@ -85,7 +85,7 @@ export async function createQuestion(
   }
 }
 
-export async function editQuestion(
+export async function editQuestionAction(
   params: EditQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
   // validate params using action wrapper helper
@@ -204,7 +204,7 @@ export async function editQuestion(
   }
 }
 
-export async function getQuestion(
+export async function getQuestionAction(
   params: GetQuestionParams,
 ): Promise<ActionResponse<Question>> {
   // validate params using action wrapper helper
@@ -233,7 +233,7 @@ export async function getQuestion(
   }
 }
 
-export async function getQuestions(
+export async function getQuestionsAction(
   params: PaginatedSearchParams,
 ): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
   // validate the params

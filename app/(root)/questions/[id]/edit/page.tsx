@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { QuestionForm } from "@/components/forms/question-form";
 import ROUTES from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestionAction } from "@/lib/actions/question.action";
 import { notFound, redirect } from "next/navigation";
 
 export default async function EditQuestion({ params }: RouteParams) {
@@ -11,7 +11,9 @@ export default async function EditQuestion({ params }: RouteParams) {
   const session = await auth();
   if (!session) return redirect("/sign-in");
 
-  const { data: question, success } = await getQuestion({ questionId: id });
+  const { data: question, success } = await getQuestionAction({
+    questionId: id,
+  });
   if (!success) return notFound();
 
   if (question?.author.toString() !== session.user?.id)

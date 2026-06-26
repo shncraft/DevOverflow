@@ -17,7 +17,10 @@ import { KeyboardEvent, useRef, useTransition } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import TagCard from "../cards/tag-card";
-import { createQuestion, editQuestion } from "@/lib/actions/question.action";
+import {
+  createQuestionAction,
+  editQuestionAction,
+} from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
@@ -90,7 +93,7 @@ export function QuestionForm({ question, isEdit = false }: QuestionFormProps) {
   const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
     startTransition(async () => {
       if (isEdit && question) {
-        const result = await editQuestion({
+        const result = await editQuestionAction({
           questionId: question?._id,
           ...data,
         });
@@ -108,7 +111,7 @@ export function QuestionForm({ question, isEdit = false }: QuestionFormProps) {
 
         return;
       }
-      const result = await createQuestion(data);
+      const result = await createQuestionAction(data);
 
       if (result.success) {
         toast.success("Question created successfully.");

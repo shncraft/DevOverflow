@@ -9,7 +9,7 @@ import {
 } from "../validations";
 import { NotFoundError } from "../http-errors";
 
-export async function getTags(
+export async function getTagsAction(
   params: PaginatedSearchParams,
 ): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> {
   // validate the params
@@ -84,7 +84,7 @@ export async function getTags(
   }
 }
 
-export async function getTagQuestions(
+export async function getTagQuestionsAction(
   params: GetTagQuestionsParams,
 ): Promise<
   ActionResponse<{ tag: Tag; questions: Question[]; isNext: boolean }>

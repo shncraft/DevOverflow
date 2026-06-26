@@ -3,7 +3,7 @@ import { Preview } from "@/components/editor/preview";
 import { Metric } from "@/components/metric";
 import { UserAvatar } from "@/components/user-avatar";
 import ROUTES from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestionAction } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -11,7 +11,9 @@ import { redirect } from "next/navigation";
 export default async function QuestionDetails({ params }: RouteParams) {
   const { id } = await params;
 
-  const { success, data: question } = await getQuestion({ questionId: id });
+  const { success, data: question } = await getQuestionAction({
+    questionId: id,
+  });
 
   if (!success || !question) return redirect("/404");
 

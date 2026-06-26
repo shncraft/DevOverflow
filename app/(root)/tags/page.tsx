@@ -3,12 +3,12 @@ import DataRenderer from "@/components/data-renderer";
 import LocalSearch from "@/components/search/local-search";
 import ROUTES from "@/constants/routes";
 import { EMPTY_TAGS } from "@/constants/states";
-import { getTags } from "@/lib/actions/tag.action";
+import { getTagsAction } from "@/lib/actions/tag.action";
 
 export default async function TagsPage({ searchParams }: RouteParams) {
   const { page, pageSize, query, filter } = await searchParams;
 
-  const { success, data, error } = await getTags({
+  const { success, data, error } = await getTagsAction({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     query,
