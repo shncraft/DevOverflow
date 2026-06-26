@@ -10,23 +10,18 @@ import {
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 export default async function QuestionDetails({ params }: RouteParams) {
   const { id } = await params;
 
-  // Solution: Parallel data fetching by using Promise.all()
-  // Issue: Slower request, blocking rendering, increase server load, error handling complexity or race conditions.
-  const [_, { success, data: question }] = await Promise.all([
-    await incrementViewsAction({ questionId: id }),
-    await getQuestionAction({ questionId: id }),
-  ]);
+  const { success, data: question } = await getQuestionAction({
+    questionId: id,
+  });
 
-  // Sequential data fetching causes waterfall effect problem
-  // await incrementViewsAction({ questionId: id });
-
-  // const { success, data: question } = await getQuestionAction({
-  //   questionId: id,
-  // });
+  after(async () => {
+    await incrementViewsAction({ questionId: id });
+  });
 
   if (!success || !question) return redirect("/404");
 
