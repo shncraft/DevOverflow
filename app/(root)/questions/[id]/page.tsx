@@ -40,6 +40,7 @@ export default async function QuestionDetails({ params }: RouteParams) {
   });
 
   const {
+    _id,
     author,
     answers,
     content,
@@ -122,7 +123,11 @@ export default async function QuestionDetails({ params }: RouteParams) {
       </section>
 
       <section className="my-5">
-        <AnswerForm questionId={question._id} />
+        <AnswerForm
+          questionId={_id}
+          questionTitle={title}
+          questionContent={content}
+        />
       </section>
     </>
   );

@@ -1,13 +1,7 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "../ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup } from "../ui/field";
 
 import { useRef, useState, useTransition } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
@@ -21,13 +15,24 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { createAnswerAction } from "@/lib/actions/answer.action";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-export function AnswerForm({ questionId }: { questionId: string }) {
+export function AnswerForm({
+  questionId,
+  questionTitle,
+  questionContent,
+}: {
+  questionId: string;
+  questionTitle: string;
+  questionContent: string;
+}) {
   const [isAISubmitting, setIsAISubmitting] = useState(false);
+  const session = useSession();
 
   const [isAnswering, startAnsweringTransition] = useTransition();
 
@@ -49,12 +54,53 @@ export function AnswerForm({ questionId }: { questionId: string }) {
 
       if (result.success) {
         form.reset({ content: "" });
-
         toast.success("Your answer has been posted successfully.");
+
+        if (editorRef.current) {
+          editorRef.current.setMarkdown("");
+        }
       } else {
         toast.error(`Error: ${result.error?.message}`);
       }
     });
+  };
+
+  const generateAIAnswer = async () => {
+    if (session.status !== "authenticated") {
+      return toast.warning(
+        "Unauthorized! You need to be logged in to use this feature.",
+      );
+    }
+    setIsAISubmitting(true);
+    const userAnswer = editorRef.current?.getMarkdown();
+
+    try {
+      const { success, data, error } = await api.ai.getAnswer(
+        questionTitle,
+        questionContent,
+        userAnswer,
+      );
+
+      if (!success) {
+        return toast.error(`Error: ${error.message}`);
+      }
+
+      const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+
+      if (editorRef.current) {
+        editorRef.current.setMarkdown(formattedAnswer);
+        form.setValue("content", formattedAnswer);
+        form.trigger("content");
+      }
+
+      toast.success("AI generated answer has been generated.");
+      setIsAISubmitting(false);
+    } catch (error) {
+      toast.error(
+        `Error: ${error instanceof Error ? error.message : "There was a problem with your request."}`,
+      );
+      setIsAISubmitting(false);
+    }
   };
 
   return (
@@ -67,6 +113,7 @@ export function AnswerForm({ questionId }: { questionId: string }) {
           type="submit"
           disabled={isAISubmitting}
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
+          onClick={generateAIAnswer}
         >
           {isAISubmitting ? (
             <>
