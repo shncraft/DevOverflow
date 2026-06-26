@@ -3,24 +3,35 @@ import { Preview } from "@/components/editor/preview";
 import { Metric } from "@/components/metric";
 import { UserAvatar } from "@/components/user-avatar";
 import ROUTES from "@/constants/routes";
-import { getQuestionAction } from "@/lib/actions/question.action";
+import {
+  getQuestionAction,
+  incrementViewsAction,
+} from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { View } from "./view";
 
 export default async function QuestionDetails({ params }: RouteParams) {
   const { id } = await params;
 
-  const { success, data: question } = await getQuestionAction({
-    questionId: id,
-  });
+  // Solution: Parallel data fetching by using Promise.all()
+  // Issue: Slower request, blocking rendering, increase server load, error handling complexity or race conditions.
+  const [_, { success, data: question }] = await Promise.all([
+    await incrementViewsAction({ questionId: id }),
+    await getQuestionAction({ questionId: id }),
+  ]);
+
+  // Sequential data fetching causes waterfall effect problem
+  // await incrementViewsAction({ questionId: id });
+
+  // const { success, data: question } = await getQuestionAction({
+  //   questionId: id,
+  // });
 
   if (!success || !question) return redirect("/404");
 
   const {
     author,
-    _id,
     answers,
     content,
     createdAt,
@@ -33,7 +44,6 @@ export default async function QuestionDetails({ params }: RouteParams) {
 
   return (
     <>
-      <View questionId={id} />
       <div className="flex w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
           <div className="flex items-center justify-start gap-1">
