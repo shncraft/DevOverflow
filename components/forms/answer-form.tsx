@@ -94,11 +94,11 @@ export function AnswerForm({
       }
 
       toast.success("AI generated answer has been generated.");
-      setIsAISubmitting(false);
     } catch (error) {
       toast.error(
         `Error: ${error instanceof Error ? error.message : "There was a problem with your request."}`,
       );
+    } finally {
       setIsAISubmitting(false);
     }
   };
