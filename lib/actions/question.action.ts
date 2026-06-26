@@ -6,6 +6,7 @@ import {
   AskQuestionSchema,
   EditQuestionSchema,
   GetQuestionSchema,
+  IncrementViewsSchema,
   PaginatedSearchParamSchema,
 } from "../validations";
 import handleError from "../handlers/error";
@@ -14,6 +15,8 @@ import TagQuestion from "@/database/tag-question.model";
 import { ForbiddenError, NotFoundError } from "../http-errors";
 import { ITagDoc } from "@/database/tag.model";
 import { IQuestionDoc } from "@/database/question.model";
+import { revalidatePath } from "next/cache";
+import ROUTES from "@/constants/routes";
 
 export async function createQuestionAction(
   params: CreateQuestionParams,
@@ -301,6 +304,39 @@ export async function getQuestionsAction(
       success: true,
       data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
     };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function incrementViewsAction(
+  params: IncrementViewsParams,
+): Promise<ActionResponse<{ views: number }>> {
+  const validatedResult = await action({
+    params,
+    schema: IncrementViewsSchema,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const { questionId } = validatedResult.params!;
+
+  try {
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      throw new NotFoundError("Question");
+    }
+
+    question.views += 1;
+
+    await question.save();
+
+    revalidatePath(ROUTES.QUESTION(questionId));
+
+    return { success: true, data: { views: question.views } };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
