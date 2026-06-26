@@ -1,3 +1,4 @@
+import { AllAnswers } from "@/components/answer/all-answers";
 import TagCard from "@/components/cards/tag-card";
 import { Preview } from "@/components/editor/preview";
 import { AnswerForm } from "@/components/forms/answer-form";
@@ -29,7 +30,7 @@ export default async function QuestionDetails({ params }: RouteParams) {
 
   const {
     success: answerSuccess,
-    data: answer,
+    data: answerResult,
     error: answerError,
   } = await getAnswersAction({
     questionId: id,
@@ -110,6 +111,15 @@ export default async function QuestionDetails({ params }: RouteParams) {
           ))}
         </div>
       </div>
+
+      <section className="my-3.5">
+        <AllAnswers
+          data={answerResult?.answers}
+          success={answerSuccess}
+          error={answerError}
+          totalAnswers={answerResult?.totalAnswers || 0}
+        />
+      </section>
 
       <section className="my-5">
         <AnswerForm questionId={question._id} />
