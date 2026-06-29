@@ -11,10 +11,13 @@ import {
   getQuestionAction,
   incrementViewsAction,
 } from "@/lib/actions/question.action";
+import { hasVotedAction } from "@/lib/actions/vote.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
+import { LoaderIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
+import { Suspense } from "react";
 
 export default async function QuestionDetails({ params }: RouteParams) {
   const { id } = await params;
@@ -38,6 +41,11 @@ export default async function QuestionDetails({ params }: RouteParams) {
     page: 1,
     pageSize: 10,
     filter: "latest",
+  });
+
+  const hasVotedPromise = hasVotedAction({
+    targetId: question._id,
+    targetType: "question",
   });
 
   const {
@@ -73,12 +81,15 @@ export default async function QuestionDetails({ params }: RouteParams) {
           </div>
 
           <div className="flex justify-end">
-            <Votes
-              upvotes={upvotes}
-              downvotes={downvotes}
-              hasUpVoted={true}
-              hasDownVoted={false}
-            />
+            <Suspense fallback={<LoaderIcon className="size-5 animate-spin" />}>
+              <Votes
+                upvotes={upvotes}
+                downvotes={downvotes}
+                targetId={question._id}
+                targetType="question"
+                hasVotedPromise={hasVotedPromise}
+              />
+            </Suspense>
           </div>
         </div>
 

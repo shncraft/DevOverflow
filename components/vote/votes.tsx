@@ -1,28 +1,35 @@
 "use client";
 
+import { createVoteAction } from "@/lib/actions/vote.action";
 import { cn, formatNumber } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { use, useState } from "react";
 import { toast } from "sonner";
 
 interface VotesProps {
   upvotes: number;
   downvotes: number;
-  hasUpVoted: boolean;
-  hasDownVoted: boolean;
+  targetId: string;
+  targetType: "question" | "answer";
+  hasVotedPromise: Promise<ActionResponse<HasVotedResponse>>;
 }
 
 export function Votes({
   upvotes,
-  hasUpVoted,
   downvotes,
-  hasDownVoted,
+  targetId,
+  targetType,
+  hasVotedPromise,
 }: VotesProps) {
   const session = useSession();
   const userId = session.data?.user?.id;
 
+  const { success, data } = use(hasVotedPromise);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const { hasUpvoted, hasDownvoted } = data || {};
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     if (!userId)
@@ -30,17 +37,25 @@ export function Votes({
 
     setIsLoading(true);
     try {
+      const result = await createVoteAction({ targetId, targetType, voteType });
+      if (!result.success) {
+        return toast.error(`Error: Failed to vote! ${result.error?.message}.`);
+      }
       const successMessage =
         voteType === "upvote"
-          ? `Upvote ${!hasUpVoted ? "added" : "removed"} successfully.`
-          : `Downvote ${!hasDownVoted ? "added" : "removed"} successfully.`;
+          ? `Upvote ${!hasUpvoted ? "added" : "removed"} successfully.`
+          : `Downvote ${!hasDownvoted ? "added" : "removed"} successfully.`;
       toast.success(successMessage, {
         description: "Your vote has been recorded.",
       });
     } catch (error) {
-      toast.error(`Error: Failed to vote!`, {
-        description: "An error occurred while voting, Please try again later.",
-      });
+      toast.error(
+        `Error: ${error instanceof Error ? error.name : null} Failed to vote!`,
+        {
+          description:
+            "An error occurred while voting, Please try again later.",
+        },
+      );
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +65,9 @@ export function Votes({
     <div className="flex-center gap-2.5">
       <div className="flex-center gap-1.5">
         <Image
-          src={hasUpVoted ? "/icons/upvoted.svg" : "/icons/upvote.svg"}
+          src={
+            success && hasUpvoted ? "/icons/upvoted.svg" : "/icons/upvote.svg"
+          }
           width={18}
           height={18}
           alt="upvote"
@@ -67,7 +84,11 @@ export function Votes({
 
       <div className="flex-center gap-1.5">
         <Image
-          src={hasDownVoted ? "/icons/downvoted.svg" : "/icons/downvote.svg"}
+          src={
+            success && hasDownvoted
+              ? "/icons/downvoted.svg"
+              : "/icons/downvote.svg"
+          }
           width={18}
           height={18}
           alt="downvote"
