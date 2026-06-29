@@ -154,3 +154,8 @@ export const CreateVoteSchema = z.object({
 export const UpdateVoteCountSchema = CreateVoteSchema.extend({
   change: z.union([z.literal(-1), z.literal(1)]),
 });
+
+export const HasVotedSchema = CreateVoteSchema.pick({
+  targetId: true,
+  targetType: true,
+});
