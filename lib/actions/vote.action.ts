@@ -61,7 +61,7 @@ export async function createVoteAction(
   const { targetId, targetType, voteType } = validatedResult.params!;
   const userId = validatedResult.session?.user?.id;
 
-  if (!userId) throw new UnauthorizedError();
+  if (!userId) return handleError(new UnauthorizedError()) as ErrorResponse;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -94,7 +94,11 @@ export async function createVoteAction(
         );
         // update respective model
         await updateVoteCountAction(
-          { targetId, targetType, voteType, change: -1 },
+          { targetId, targetType, voteType: existingVote.voteType, change: -1 },
+          session,
+        );
+        await updateVoteCountAction(
+          { targetId, targetType, voteType, change: 1 },
           session,
         );
       }
