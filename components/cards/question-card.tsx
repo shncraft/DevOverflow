@@ -9,7 +9,17 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({
-  question: { _id, title, tags, author, createdAt, upvotes, answers, views },
+  question: {
+    _id,
+    title,
+    tags,
+    author,
+    createdAt,
+    upvotes,
+    answers,
+    views,
+    downvotes,
+  },
 }: QuestionCardProps) {
   return (
     <div className="card-wrapper rounded-2.5 p-9 sm:px-11">
@@ -50,8 +60,16 @@ export function QuestionCard({
             imgUrl="/icons/like.svg"
             alt="like"
             value={upvotes}
-            title=" Votes"
+            title=" Upvotes"
             textStyles="small-medium text-dark400-light800"
+          />
+          <Metric
+            imgUrl="/icons/like.svg"
+            alt="dislike"
+            value={downvotes}
+            title=" Downvotes"
+            textStyles="small-medium text-dark400-light800"
+            imgStyles="rotate-180"
           />
           <Metric
             imgUrl="/icons/message.svg"

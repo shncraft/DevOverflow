@@ -122,7 +122,14 @@ export async function getAnswersAction(
 
     const isNext = totalAnswers > answers.length + offset;
 
-    return { success: true, data: { answers, totalAnswers, isNext } };
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
+        totalAnswers,
+        isNext,
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

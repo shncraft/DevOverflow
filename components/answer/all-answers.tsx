@@ -34,6 +34,8 @@ export function AllAnswers({
               author={answer.author}
               content={answer.content}
               createdAt={answer.createdAt}
+              upvotes={answer.upvotes}
+              downvotes={answer.downvotes}
             />
           ))
         }
