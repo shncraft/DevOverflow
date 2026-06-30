@@ -3,10 +3,12 @@ import TagCard from "@/components/cards/tag-card";
 import { Preview } from "@/components/editor/preview";
 import { AnswerForm } from "@/components/forms/answer-form";
 import { Metric } from "@/components/metric";
+import { SaveQuestion } from "@/components/questions/save-question";
 import { UserAvatar } from "@/components/user-avatar";
 import { Votes } from "@/components/vote/votes";
 import ROUTES from "@/constants/routes";
 import { getAnswersAction } from "@/lib/actions/answer.action";
+import { hasSavedQuestionAction } from "@/lib/actions/collection.action";
 import {
   getQuestionAction,
   incrementViewsAction,
@@ -48,6 +50,10 @@ export default async function QuestionDetails({ params }: RouteParams) {
     targetType: "question",
   });
 
+  const hasSavedQuestionPromise = hasSavedQuestionAction({
+    questionId: question._id,
+  });
+
   const {
     _id,
     author,
@@ -80,7 +86,7 @@ export default async function QuestionDetails({ params }: RouteParams) {
             </Link>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end items-center gap-4">
             <Suspense fallback={<LoaderIcon className="size-5 animate-spin" />}>
               <Votes
                 upvotes={upvotes}
@@ -88,6 +94,13 @@ export default async function QuestionDetails({ params }: RouteParams) {
                 targetId={question._id}
                 targetType="question"
                 hasVotedPromise={hasVotedPromise}
+              />
+            </Suspense>
+
+            <Suspense fallback={<LoaderIcon className="size-5 animate-spin" />}>
+              <SaveQuestion
+                questionId={id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
               />
             </Suspense>
           </div>
