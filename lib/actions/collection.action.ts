@@ -91,7 +91,7 @@ export async function getSavedQuestionsAction(
   params: PaginatedSearchParams,
 ): Promise<
   ActionResponse<{
-    questions: Question[];
+    collections: Collection[];
     totalQuestions: number;
     isNext: boolean;
   }>
@@ -135,7 +135,7 @@ export async function getSavedQuestionsAction(
           as: "question",
         },
       },
-      { $unwind: "$unwind" },
+      { $unwind: "$question" },
       {
         $lookup: {
           from: "users",
@@ -153,7 +153,6 @@ export async function getSavedQuestionsAction(
           as: "question.tags",
         },
       },
-      { $unwind: "$question.tags" },
     ];
 
     if (query) {
@@ -181,13 +180,13 @@ export async function getSavedQuestionsAction(
 
     const questions = await Collection.aggregate(pipeline);
 
-    const isNext = totalQuestions.count > offset + questions.length;
+    const isNext = totalQuestions > offset + questions.length;
 
     return {
       success: true,
       data: {
-        questions: JSON.parse(JSON.stringify(questions)),
-        totalQuestions: totalQuestions.count,
+        collections: JSON.parse(JSON.stringify(questions)),
+        totalQuestions: totalQuestions,
         isNext,
       },
     };

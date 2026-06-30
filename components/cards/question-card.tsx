@@ -3,6 +3,9 @@ import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import TagCard from "./tag-card";
 import { Metric } from "../metric";
+import { SaveQuestion } from "../questions/save-question";
+
+import { hasSavedQuestionAction } from "@/lib/actions/collection.action";
 
 interface QuestionCardProps {
   question: Question;
@@ -21,19 +24,27 @@ export function QuestionCard({
     downvotes,
   },
 }: QuestionCardProps) {
+  const hasSavedQuestionPromise = hasSavedQuestionAction({ questionId: _id });
   return (
     <div className="card-wrapper rounded-2.5 p-9 sm:px-11">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
-        <div>
+        <div className="w-full">
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimeStamp(createdAt)}
           </span>
 
-          <Link href={ROUTES.QUESTION(_id)}>
-            <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
-              {title}
-            </h3>
-          </Link>
+          <div className="flex items-center justify-between w-full">
+            <Link href={ROUTES.QUESTION(_id)}>
+              <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
+                {title}
+              </h3>
+            </Link>
+
+            <SaveQuestion
+              questionId={_id}
+              hasSavedQuestionPromise={hasSavedQuestionPromise}
+            />
+          </div>
         </div>
       </div>
 
